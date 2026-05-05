@@ -8,11 +8,12 @@ const dataFile = path.join(__dirname, 'public', 'data.js');
 
 if (!fs.existsSync(outputDir)) { fs.mkdirSync(outputDir, { recursive: true }); }
 
-const categories = ['cast-aluminum', 'offset-pivot', 'courtyard', 'pavilion'];
+// 对应您要求的分类名称
+const categories = ['aluminum-door', 'pivot', 'driveway-gate', 'pergola'];
 const finalData = {};
 
 async function processAll() {
-    console.log('🚀 开始整理 KING DOOR 产品图册...');
+    console.log('🚀 正在为您优化 KING DOOR 无缝融合图册...');
 
     for (const category of categories) {
         finalData[category] = [];
@@ -39,31 +40,26 @@ async function processAll() {
             if (data.pure && data.effect) {
                 const pureOutput = `${category}-${id}-pure.webp`;
                 const effectOutput = `${category}-${id}-effect.webp`;
-                const purePath = path.join(outputDir, pureOutput);
-                const effectPath = path.join(outputDir, effectOutput);
-
-                // 仅压缩图片，不带任何水印文字
-                if (!fs.existsSync(purePath)) {
+                
+                // 保持原图 800*800 比例，仅转为 WebP 提升加载速度
+                if (!fs.existsSync(path.join(outputDir, pureOutput))) {
                     await sharp(path.join(catPath, data.pure))
-                        .resize(1000, 1000, { fit: 'contain', background: '#fff' })
-                        .webp({ quality: 85 })
-                        .toFile(purePath);
+                        .webp({ quality: 90 })
+                        .toFile(path.join(outputDir, pureOutput));
                 }
-                if (!fs.existsSync(effectPath)) {
+                if (!fs.existsSync(path.join(outputDir, effectOutput))) {
                     await sharp(path.join(catPath, data.effect))
-                        .resize({ width: 1000, withoutEnlargement: true })
-                        .webp({ quality: 85 })
-                        .toFile(effectPath);
+                        .webp({ quality: 90 })
+                        .toFile(path.join(outputDir, effectOutput));
                 }
 
                 finalData[category].push({ id: id, pure: `images/${pureOutput}`, effect: `images/${effectOutput}`, isNew: data.isNew });
             }
         }
-        finalData[category].sort((a, b) => (a.isNew === b.isNew ? 0 : a.isNew ? -1 : 1));
     }
 
     fs.writeFileSync(dataFile, `const productData = ${JSON.stringify(finalData, null, 4)};`);
-    console.log(`\n🎉 图册数据已全部更新！`);
+    console.log(`🎉 资源处理完成！`);
 }
 
 processAll();
