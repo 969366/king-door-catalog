@@ -3,196 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#050505">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>KING DOOR | Premium Collection</title>
-    
-    <!-- WhatsApp 链接分享高清卡片设置 (正式上线后记得替换真实域名) -->
-    <meta property="og:title" content="KING DOOR | Premium Collection">
-    <meta property="og:description" content="Explore our latest 2026 collections of premium doors.">
-    <meta property="og:image" content="https://你的真实域名/images/cover-link.jpg">
-    <meta property="og:type" content="website">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <title>KING DOOR - Premium Collection</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
-        /* 极致暗黑，极简字体排版 */
-        body, html { margin: 0; padding: 0; height: 100%; background-color: #050505; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 300; overflow: hidden; color: #fff; -webkit-font-smoothing: antialiased; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #050505; color: #fff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; overflow: hidden; }
         
-        /* 顶部导航：自动避开手机镜头刘海 (safe-area-inset-top) */
-        .top-nav { display: flex; justify-content: space-around; align-items: center; height: 65px; padding: 0 5px; padding-top: env(safe-area-inset-top); background: linear-gradient(to bottom, #050505 50%, transparent); z-index: 100; position: relative; }
-        .nav-item { color: #555; font-size: 11px; font-weight: 500; letter-spacing: 2px; padding: 10px 5px; cursor: pointer; transition: color 0.4s; text-transform: uppercase; }
+        /* 顶部导航：防挤压+自适应滑动 */
+        .top-nav { 
+            display: flex; justify-content: flex-start; align-items: center; gap: 24px; 
+            height: 65px; padding: 0 20px; padding-top: env(safe-area-inset-top); 
+            background: linear-gradient(to bottom, #050505 50%, transparent); 
+            z-index: 100; position: fixed; top: 0; width: 100%; 
+            overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; 
+        }
+        .top-nav::-webkit-scrollbar { display: none; }
+        .nav-item { 
+            color: #555; font-size: 11px; font-weight: 500; letter-spacing: 2px; padding: 10px 0; 
+            cursor: pointer; transition: color 0.4s; text-transform: uppercase; 
+            white-space: nowrap; flex-shrink: 0; 
+        }
         .nav-item.active { color: #D4AF37; }
 
-        /* 给底部公司名称和手机横线留出空间 */
-        .swiper-container { width: 100%; height: calc(100vh - 65px - env(safe-area-inset-top) - 30px - env(safe-area-inset-bottom)); }
-        .swiper-slide { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 25px; box-sizing: border-box; }
+        /* Swiper 基础设置 */
+        .swiper { width: 100%; height: 100vh; }
+        .swiper-slide { display: flex; flex-direction: column; height: 100vh; position: relative; }
         
-        /* 图片展示区 */
-        .product-image-box { position: relative; width: 100%; max-width: 420px; height: 65vh; border-radius: 8px; overflow: hidden; cursor: pointer; background: #0a0a0a; }
-        
-        /* ================= 电影级对焦切换特效 ================= */
-        .product-image-box img { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            object-fit: cover; 
-            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
-                        transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
-                        filter 0.8s ease;
-            will-change: transform, opacity, filter;
-        }
-        .img-effect { opacity: 0; transform: scale(1.08); filter: blur(8px); }
-        .img-pure { opacity: 1; transform: scale(1); filter: blur(0); }
-        .product-image-box.show-effect .img-pure { opacity: 0; transform: scale(0.92); filter: blur(8px); }
-        .product-image-box.show-effect .img-effect { opacity: 1; transform: scale(1); filter: blur(0); }
-        /* ============================================================== */
+        /* 展示区 */
+        .image-container { position: relative; width: 100%; height: 100%; }
+        .image-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.6s ease; }
+        .img-pure { opacity: 1; z-index: 2; object-fit: contain !important; background: #fff;}
+        .img-effect { opacity: 0; z-index: 1; }
+        .image-container.show-effect .img-pure { opacity: 0; }
+        .image-container.show-effect .img-effect { opacity: 1; }
 
-        /* 底部极简指示双线 */
-        .minimal-indicator { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; pointer-events: none; }
-        .line-dot { width: 16px; height: 2px; background: rgba(255,255,255,0.3); transition: all 0.4s; }
-        .product-image-box:not(.show-effect) .line-pure { background: #fff; width: 24px; }
-        .product-image-box.show-effect .line-effect { background: #fff; width: 24px; }
-        
-        /* 产品编号与纯矢量联系图标 */
-        .product-info-row { width: 100%; max-width: 420px; margin-top: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .product-id { font-size: 20px; font-weight: 300; letter-spacing: 3px; color: #fff; margin: 0; }
-        
-        .icon-actions { display: flex; gap: 20px; align-items: center; }
-        .icon-btn { color: #888; text-decoration: none; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
-        .icon-btn svg { width: 22px; height: 22px; fill: currentColor; }
-        .icon-btn:hover, .icon-btn:active { color: #D4AF37; transform: scale(1.1); }
-        
-        /* 新品金属色徽标 */
-        .badge-new { position: absolute; top: 15px; left: 15px; background: transparent; color: #D4AF37; border: 1px solid #D4AF37; padding: 3px 8px; font-size: 10px; font-weight: 400; letter-spacing: 1px; z-index: 10; pointer-events: none; }
+        .new-badge { position: absolute; top: 80px; right: 20px; background: #D4AF37; color: #000; padding: 4px 10px; font-size: 10px; font-weight: bold; z-index: 10; border-radius: 2px; }
 
-        /* 公司名称水印：自动避开 iPhone 底部滑动横线 */
-        .company-footer { position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 9px; color: #444; letter-spacing: 1px; padding-bottom: max(10px, env(safe-area-inset-bottom)); pointer-events: none; text-transform: uppercase; }
+        /* 底部操作面板 */
+        .bottom-panel { position: absolute; bottom: 0; width: 100%; padding: 20px 20px 40px; padding-bottom: calc(40px + env(safe-area-inset-bottom)); background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); z-index: 10; display: flex; justify-content: space-between; align-items: flex-end; pointer-events: none; }
+        .bottom-panel > * { pointer-events: auto; }
+        
+        .toggle-btn { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 11px; letter-spacing: 1px; cursor: pointer; text-transform: uppercase; }
+        
+        /* 四联图标样式 */
+        .icon-actions { display: flex; gap: 12px; }
+        .icon-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; cursor: pointer; text-decoration: none; }
+        .icon-btn svg { width: 18px; height: 18px; fill: #fff; }
 
-        /* 微信黑金极简弹窗 */
-        .wechat-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; justify-content: center; align-items: center; backdrop-filter: blur(10px); opacity: 0; transition: opacity 0.3s; }
-        .wechat-modal.active { display: flex; opacity: 1; }
-        .wechat-content { background: #0a0a0a; padding: 30px; border-radius: 16px; text-align: center; border: 1px solid rgba(212,175,55,0.2); width: 260px; }
-        .wechat-content img { width: 200px; height: 200px; border-radius: 8px; margin-bottom: 20px; }
-        .wechat-id { font-size: 14px; color: #fff; letter-spacing: 1px;}
+        .company-footer { position: fixed; bottom: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); width: 100%; text-align: center; color: #444; font-size: 9px; letter-spacing: 1px; z-index: 5; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <!-- 顶部大写英文品类导航 -->
     <div class="top-nav">
         <div class="nav-item active" onclick="loadCategory('cast-aluminum', this)">Cast Aluminum</div>
-        <div class="nav-item" onclick="loadCategory('pivot', this)">Pivot</div>
-        <div class="nav-item" onclick="loadCategory('Driveway Gate', this)">Driveway Gate</div>
+        <div class="nav-item" onclick="loadCategory('offset-pivot', this)">Offset Pivot</div>
+        <div class="nav-item" onclick="loadCategory('courtyard', this)">Courtyard</div>
         <div class="nav-item" onclick="loadCategory('pavilion', this)">Pavilion</div>
     </div>
 
-    <!-- 核心滑动容器 -->
-    <div class="swiper-container swiper">
+    <div class="swiper mySwiper">
         <div class="swiper-wrapper" id="product-wrapper"></div>
     </div>
 
-    <!-- 底部版权水印 (极简展示公司名称) -->
-    <div class="company-footer">
-        &copy; Copyright Zhejiang Kaihua Door Co. Ltd.
-    </div>
+    <div class="company-footer">&copy; Zhejiang Kaihua Door Co. Ltd.</div>
 
-    <!-- 微信弹窗 -->
-    <div class="wechat-modal" id="wechatModal">
-        <div class="wechat-content">
-            <!-- 记得将 public/images/wechat-qr.jpg 替换为你们真实的微信二维码 -->
-            <img src="images/wechat-qr.jpg" alt="WeChat QR Code">
-            <div class="wechat-id">WeChat: KingDoor</div>
-        </div>
-    </div>
-
-    <!-- 加载生成的图册数据与 Swiper 库 -->
     <script src="data.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script>
-        // === 你指定的联系方式数据源 ===
         const config = {
+            phone: "008613857920335",
             whatsapp: "8613857920335",
             email: "khdoor@126.com",
             subject: "KING DOOR Inquiry"
         };
 
-        let mySwiper;
+        let swiperInstance = null;
 
-        function loadCategory(categoryKey, navElement) {
+        function loadCategory(categoryName, navElement) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(navElement) navElement.classList.add('active');
 
             const wrapper = document.getElementById('product-wrapper');
             wrapper.innerHTML = ''; 
+
+            const items = productData[categoryName] || [];
             
-            // 安全防御机制
-            if (typeof productData === 'undefined' || !productData[categoryKey]) return;
+            if (items.length === 0) {
+                wrapper.innerHTML = `<div class="swiper-slide" style="justify-content:center; align-items:center; color:#444; font-size:11px;">COMING SOON</div>`;
+            } else {
+                items.forEach(item => {
+                    const isNewHtml = item.isNew ? `<div class="new-badge">NEW</div>` : '';
+                    const waLink = `https://api.whatsapp.com/send?phone=${config.whatsapp}&text=${encodeURIComponent('Hi, interested in: ' + item.id)}`;
 
-            const products = productData[categoryKey];
-            
-            products.forEach(item => {
-                // WhatsApp 预填充报文
-                const waText = encodeURIComponent(`Hi, I am interested in KING DOOR: [${item.id}].`);
-                const waLink = `https://wa.me/${config.whatsapp}?text=${waText}`;
-                
-                // 邮件预填充报文
-                const mailSubject = encodeURIComponent(`${config.subject} - ${item.id}`);
-                const mailBody = encodeURIComponent(`Hello,\n\nI would like to know more details for item: ${item.id}.\n\nThanks.`);
-                const mailLink = `mailto:${config.email}?subject=${mailSubject}&body=${mailBody}`;
-
-                // 新品标识判断
-                const newBadgeHtml = item.isNew ? `<div class="badge-new">NEW</div>` : '';
-
-                const slide = document.createElement('div');
-                slide.className = 'swiper-slide';
-                slide.innerHTML = `
-                    <div class="product-image-box" onclick="toggleImage(this)">
-                        ${newBadgeHtml}
-                        <img src="${item.pure}" class="img-pure" alt="${item.id}">
-                        <img src="${item.effect}" class="img-effect" alt="${item.id}">
-                        <!-- 极简双线提示器 -->
-                        <div class="minimal-indicator">
-                            <div class="line-dot line-pure"></div>
-                            <div class="line-dot line-effect"></div>
+                    wrapper.innerHTML += `
+                    <div class="swiper-slide">
+                        ${isNewHtml}
+                        <div class="image-container" onclick="this.classList.toggle('show-effect')">
+                            <img src="${item.pure}" class="img-pure">
+                            <img src="${item.effect}" class="img-effect">
                         </div>
-                    </div>
-                    
-                    <div class="product-info-row">
-                        <h2 class="product-id">${item.id}</h2>
-                        
-                        <!-- 极简矢量功能按钮组 -->
-                        <div class="icon-actions">
-                            <a href="${waLink}" target="_blank" class="icon-btn" title="WhatsApp">
-                                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                            </a>
-                            <div onclick="openWechat()" class="icon-btn" title="WeChat">
-                                <svg viewBox="0 0 24 24"><path d="M8.5 14.5c-3.8 0-7-2.6-7-5.8s3.2-5.8 7-5.8 7 2.6 7 5.8-3.2 5.8-7 5.8c-.8 0-1.6-.1-2.3-.4l-2.4 1.2.6-2.2c-1.7-1.1-2.9-2.7-2.9-4.4zm1.5-6.5c-.4 0-.8.3-.8.8s.4.8.8.8.8-.3.8-.8-.4-.8-.8-.8zm-3 0c-.4 0-.8.3-.8.8s.4.8.8.8.8-.3.8-.8-.4-.8-.8-.8zm15.5 8c0 3.2-3.4 5.8-7.5 5.8-.8 0-1.6-.2-2.4-.5l-2.6 1.3.7-2.4c-1.8-1.2-3.1-2.8-3.1-4.7 0-3.2 3.4-5.8 7.5-5.8s7.5 2.6 7.5 5.8zm-4.5-1.5c.4 0 .8-.3.8-.8s-.4-.8-.8-.8-.8.3-.8.8.4.8.8.8zm-3 0c.4 0 .8-.3.8-.8s-.4-.8-.8-.8-.8.3-.8.8.4.8.8.8z"/></svg>
+                        <div class="bottom-panel">
+                            <div class="toggle-btn" onclick="this.previousElementSibling.classList.toggle('show-effect')">View Effect</div>
+                            <div class="icon-actions">
+                                <a href="tel:${config.phone}" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
+                                <a href="${waLink}" target="_blank" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg></a>
+                                <div onclick="alert('WeChat ID: 13857920335')" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M8.5 14.5c-3.8 0-7-2.6-7-5.8s3.2-5.8 7-5.8 7 2.6 7 5.8-3.2 5.8-7 5.8c-.8 0-1.6-.1-2.3-.4l-2.4 1.2.6-2.2c-1.7-1.1-2.9-2.7-2.9-4.4zm1.5-6.5c-.4 0-.8.3-.8.8s.4.8.8.8.8-.3.8-.8-.4-.8-.8-.8zm-3 0c-.4 0-.8.3-.8.8s.4.8.8.8.8-.3.8-.8-.4-.8-.8-.8zm15.5 8c0 3.2-3.4 5.8-7.5 5.8-.8 0-1.6-.2-2.4-.5l-2.6 1.3.7-2.4c-1.8-1.2-3.1-2.8-3.1-4.7 0-3.2 3.4-5.8 7.5-5.8s7.5 2.6 7.5 5.8zm-4.5-1.5c.4 0 .8-.3.8-.8s-.4-.8-.8-.8-.8.3-.8.8.4.8.8.8zm-3 0c.4 0 .8-.3.8-.8s-.4-.8-.8-.8-.8.3-.8.8.4.8.8.8z"/></svg></div>
+                                <a href="mailto:${config.email}" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
                             </div>
-                            <a href="${mailLink}" class="icon-btn" title="Email">
-                                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                            </a>
                         </div>
-                    </div>
-                `;
-                wrapper.appendChild(slide);
-            });
+                    </div>`;
+                });
+            }
 
-            if (mySwiper) mySwiper.destroy();
-            mySwiper = new Swiper('.swiper', { spaceBetween: 20, slidesPerView: 1 });
+            if (swiperInstance) swiperInstance.destroy(true, true);
+            swiperInstance = new Swiper(".mySwiper", { direction: "vertical", slidesPerView: 1, mousewheel: true, speed: 500 });
         }
 
-        // 处理效果图点击切换
-        function toggleImage(element) { element.classList.toggle('show-effect'); }
-        
-        // 微信弹窗交互逻辑
-        const modal = document.getElementById('wechatModal');
-        function openWechat() { modal.classList.add('active'); }
-        function closeWechat() { modal.classList.remove('active'); }
-        modal.addEventListener('click', function(e) { if(e.target === modal) closeWechat(); });
-
-        // 初始化加载默认类目
-        setTimeout(() => {
-            loadCategory('cast-aluminum', document.querySelector('.nav-item.active'));
-        }, 100);
+        window.onload = () => loadCategory('cast-aluminum', document.querySelector('.nav-item'));
     </script>
 </body>
 </html>
