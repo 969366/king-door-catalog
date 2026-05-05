@@ -361,80 +361,6 @@ const productData = {
             "isNew": false
         }
     ],
-    "pivot": [
-        {
-            "id": "P-001",
-            "pure": "images/pivot-P-001-pure.webp",
-            "effect": "images/pivot-P-001-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-002",
-            "pure": "images/pivot-P-002-pure.webp",
-            "effect": "images/pivot-P-002-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-003",
-            "pure": "images/pivot-P-003-pure.webp",
-            "effect": "images/pivot-P-003-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-004",
-            "pure": "images/pivot-P-004-pure.webp",
-            "effect": "images/pivot-P-004-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-005",
-            "pure": "images/pivot-P-005-pure.webp",
-            "effect": "images/pivot-P-005-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-006",
-            "pure": "images/pivot-P-006-pure.webp",
-            "effect": "images/pivot-P-006-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-007",
-            "pure": "images/pivot-P-007-pure.webp",
-            "effect": "images/pivot-P-007-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-008",
-            "pure": "images/pivot-P-008-pure.webp",
-            "effect": "images/pivot-P-008-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-009",
-            "pure": "images/pivot-P-009-pure.webp",
-            "effect": "images/pivot-P-009-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-010",
-            "pure": "images/pivot-P-010-pure.webp",
-            "effect": "images/pivot-P-010-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-011",
-            "pure": "images/pivot-P-011-pure.webp",
-            "effect": "images/pivot-P-011-pure.webp",
-            "isNew": false
-        },
-        {
-            "id": "P-012",
-            "pure": "images/pivot-P-012-pure.webp",
-            "effect": "images/pivot-P-012-pure.webp",
-            "isNew": false
-        }
-    ],
     "driveway-gate": [
         {
             "id": "DG-001",
@@ -511,12 +437,6 @@ const productData = {
     ],
     "pergola": [
         {
-            "id": "PERG-001",
-            "pure": "images/pergola-PERG-001-pure.webp",
-            "effect": "images/pergola-PERG-001-pure.webp",
-            "isNew": false
-        },
-        {
             "id": "PERG-002",
             "pure": "images/pergola-PERG-002-pure.webp",
             "effect": "images/pergola-PERG-002-pure.webp",
@@ -526,6 +446,80 @@ const productData = {
             "id": "PERG-003",
             "pure": "images/pergola-PERG-003-pure.webp",
             "effect": "images/pergola-PERG-003-pure.webp",
+            "isNew": false
+        }
+    ],
+    "pivot": [
+        {
+            "id": "P-001",
+            "pure": "images/pivot-P-001-pure.webp",
+            "effect": "images/pivot-P-001-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-002",
+            "pure": "images/pivot-P-002-pure.webp",
+            "effect": "images/pivot-P-002-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-003",
+            "pure": "images/pivot-P-003-pure.webp",
+            "effect": "images/pivot-P-003-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-004",
+            "pure": "images/pivot-P-004-pure.webp",
+            "effect": "images/pivot-P-004-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-005",
+            "pure": "images/pivot-P-005-pure.webp",
+            "effect": "images/pivot-P-005-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-006",
+            "pure": "images/pivot-P-006-pure.webp",
+            "effect": "images/pivot-P-006-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-007",
+            "pure": "images/pivot-P-007-pure.webp",
+            "effect": "images/pivot-P-007-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-008",
+            "pure": "images/pivot-P-008-pure.webp",
+            "effect": "images/pivot-P-008-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-009",
+            "pure": "images/pivot-P-009-pure.webp",
+            "effect": "images/pivot-P-009-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-010",
+            "pure": "images/pivot-P-010-pure.webp",
+            "effect": "images/pivot-P-010-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-011",
+            "pure": "images/pivot-P-011-pure.webp",
+            "effect": "images/pivot-P-011-pure.webp",
+            "isNew": false
+        },
+        {
+            "id": "P-012",
+            "pure": "images/pivot-P-012-pure.webp",
+            "effect": "images/pivot-P-012-pure.webp",
             "isNew": false
         }
     ]
