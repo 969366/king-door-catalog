@@ -8,22 +8,27 @@ const dataFile = path.join(__dirname, 'public', 'data.js');
 
 if (!fs.existsSync(outputDir)) { fs.mkdirSync(outputDir, { recursive: true }); }
 
-// 对应您要求的分类名称
+// 【关键修改点】这里的名字必须和您 original_images 下的文件夹名字一模一样
 const categories = ['aluminum-door', 'pivot', 'driveway-gate', 'pergola'];
 const finalData = {};
 
 async function processAll() {
-    console.log('🚀 正在为您优化 KING DOOR 无缝融合图册...');
+    console.log('🚀 开始全量同步 KING DOOR 产品数据...');
 
     for (const category of categories) {
         finalData[category] = [];
         const catPath = path.join(inputBaseDir, category);
-        if (!fs.existsSync(catPath)) continue;
+        
+        if (!fs.existsSync(catPath)) {
+            console.log(`⚠️ 未找到文件夹: ${category}，已跳过。`);
+            continue;
+        }
 
         const files = fs.readdirSync(catPath).filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f));
         const productMap = {};
 
         for (const file of files) {
+            // 支持只有 pure 图，或者 pure+effect 成对的情况
             const match = file.match(/^(.*?)-(pure|effect)\.\w+$/i);
             if (match) {
                 let idRaw = match[1].toUpperCase();
@@ -37,29 +42,36 @@ async function processAll() {
         }
 
         for (const [id, data] of Object.entries(productMap)) {
-            if (data.pure && data.effect) {
+            // 只要有 pure 图，就进行处理
+            if (data.pure) {
                 const pureOutput = `${category}-${id}-pure.webp`;
-                const effectOutput = `${category}-${id}-effect.webp`;
+                const effectOutput = data.effect ? `${category}-${id}-effect.webp` : null;
                 
-                // 保持原图 800*800 比例，仅转为 WebP 提升加载速度
-                if (!fs.existsSync(path.join(outputDir, pureOutput))) {
-                    await sharp(path.join(catPath, data.pure))
-                        .webp({ quality: 90 })
-                        .toFile(path.join(outputDir, pureOutput));
-                }
-                if (!fs.existsSync(path.join(outputDir, effectOutput))) {
+                // 处理 Pure 图
+                await sharp(path.join(catPath, data.pure))
+                    .webp({ quality: 90 })
+                    .toFile(path.join(outputDir, pureOutput));
+
+                // 如果有 Effect 图，也处理
+                if (data.effect) {
                     await sharp(path.join(catPath, data.effect))
                         .webp({ quality: 90 })
                         .toFile(path.join(outputDir, effectOutput));
                 }
 
-                finalData[category].push({ id: id, pure: `images/${pureOutput}`, effect: `images/${effectOutput}`, isNew: data.isNew });
+                finalData[category].push({ 
+                    id: id, 
+                    pure: `images/${pureOutput}`, 
+                    effect: effectOutput ? `images/${effectOutput}` : `images/${pureOutput}`, // 如果没实景，点击切换还是原图
+                    isNew: data.isNew 
+                });
+                console.log(`✅ 已同步: [${category}] - ${id}`);
             }
         }
     }
 
     fs.writeFileSync(dataFile, `const productData = ${JSON.stringify(finalData, null, 4)};`);
-    console.log(`🎉 资源处理完成！`);
+    console.log(`\n🎉 所有分类数据已更新成功！`);
 }
 
 processAll();
