@@ -3,52 +3,76 @@ chcp 65001 >nul
 color 0E
 
 echo ===================================================
-echo     KING DOOR - 终极修复与极速发布系统
+echo      KING DOOR - 展厅全自动【白名单】发布系统
 echo ===================================================
 echo.
 
-echo [1/4] 🧹 正在清理本地缓存与 Git 错误记忆...
-:: 强制让 Git 忘掉之前的套娃错误
-git rm --cached public >nul 2>nul
-rmdir /s /q public\images >nul 2>nul
-del .gitignore >nul 2>nul
+:: ==========================================
+:: 第一步：智能重构黑名单 (自动屏蔽所有非核心文件)
+:: ==========================================
+echo [1/4] 🛡️ 正在启动雷达扫描，自动拉黑非必要文件...
 
-echo .DS_Store > .gitignore
-echo original_images/ >> .gitignore
-echo node_modules/ >> .gitignore
+:: 1. 核心逻辑：先忽略一切 (*)
+echo * > .gitignore
+
+:: 2. 强力白名单：只允许以下“必须件”通过 (前面加感叹号表示不忽略)
+echo !index.html >> .gitignore
+echo !config.js >> .gitignore
+echo !data.js >> .gitignore
+echo !package.json >> .gitignore
+echo !package-lock.json >> .gitignore
+echo !process_pairs.js >> .gitignore
+echo !*.bat >> .gitignore
+echo !.gitignore >> .gitignore
+echo !public/ >> .gitignore
+echo !assets/ >> .gitignore
+echo !README.md >> .gitignore
+
+:: 3. 强制 Git 刷新缓存，确保之前不小心传上去的垃圾现在立刻消失
+git rm -r --cached . >nul 2>nul
+echo ✅ 扫描完成：除展厅核心文件外，所有杂质已自动拦截。
 
 echo.
-echo [2/4] ⚙️ 正在重新生成完美图片库...
+:: ==========================================
+:: 第二步：启动加工厂 (处理 original_images)
+:: ==========================================
+echo [2/4] ⚙️ 正在唤醒图片加工脚本更新数据...
+echo ---------------------------------------------------
 node process_pairs.js
+echo ---------------------------------------------------
 if %errorlevel% neq 0 (
-    echo ❌ JS 脚本运行失败！
+    echo ❌ 图片处理出错！请检查 original_images 里的图片命名。
     pause
     exit /b
 )
+echo ✅ 加工完成：新图片已生成至 public 目录。
 
 echo.
-echo [3/4] 📦 正在强制打包所有文件...
-git add -A
-git add -f public/images/
-git add -f public/assets/
-
+:: ==========================================
+:: 第三步：打包同步
+:: ==========================================
+echo [3/4] 📦 正在准备上传最新的纯净版展厅...
+git add .
 set "currentTime=%date% %time%"
-git commit -m "KingDoor Final Fix: %currentTime%" >nul 2>nul
+git commit -m "KingDoor Auto Guard Update: %currentTime%" >nul 2>nul
 
 echo.
-echo [4/4] 🚀 正在接通云端轨道并强制推送...
+:: ==========================================
+:: 第四步：推送云端
+:: ==========================================
+echo [4/4] 🚀 正在极速推送至云端...
 echo ---------------------------------------------------
-:: 核心修复：强制绑定远程的 main 分支，治好失忆症
-git push --set-upstream origin main
+git push
+echo ---------------------------------------------------
+echo.
 
-if %errorlevel% neq 0 (
-    echo.
-    echo ⚠️ 尝试备用轨道 (master)...
-    git push --set-upstream origin master
+if %errorlevel% equ 0 (
+    echo 🎉 大功告成！
+    echo 🌐 您的线上展厅已更新。
+    echo 🛡️ 刚才扫描到的所有冗余文件夹已被自动拉黑，未占用任何云端空间。
+) else (
+    echo ❌ 推送失败，请检查网络。
 )
-echo ---------------------------------------------------
 
-echo 🎉 完美搞定！
-echo 请去 GitHub 刷新看看，这次您的图片和网页绝对 100%% 上线了！
 echo.
 pause

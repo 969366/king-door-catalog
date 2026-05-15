@@ -3,202 +3,571 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>KING DOOR - Premium Collection</title>
+    
+    <meta property="og:title" content="KING DOOR - Premium Custom Door Showroom">
+    <meta property="og:description" content="Explore our exclusive collection of high-end cast aluminum doors. Customize your specs and request an instant quote directly from your device.">
+    <meta property="og:image" content="https://catalog.kaihuadoor.com/assets/logo.png">
+    <meta property="og:url" content="https://catalog.kaihuadoor.com/">
+    <meta property="og:type" content="website">
+
+    <title>KING DOOR - Immersive Showroom</title>
+    
+    <link rel="icon" href="assets/logo.png" type="image/png">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JMCXK9YNKM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-JMCXK9YNKM');
+    </script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <script src="config.js"></script>
+    <script src="data.js"></script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #000; color: #fff; font-family: 'Helvetica Neue', Arial, sans-serif; overflow: hidden; }
+        body { background-color: #000; color: #fff; font-family: 'Helvetica Neue', Arial, sans-serif; overflow: hidden; height: 100dvh; }
+        .ui-element { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        /* 顶部导航：支持自动生成，横向溢出滚动 */
-        .top-nav { 
-            display: flex; justify-content: flex-start; align-items: center; gap: 25px; 
-            height: 70px; padding: 0 20px; padding-top: env(safe-area-inset-top); 
-            background: rgba(0,0,0,0.3); backdrop-filter: blur(30px);
-            z-index: 100; position: fixed; top: 0; width: 100%; 
-            overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
+        /* 导航栏 */
+        .top-nav { display: flex; justify-content: flex-start; align-items: center; gap: 40px; height: 100px; padding: 0 40px; padding-top: env(safe-area-inset-top); background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); z-index: 2000; position: fixed; top: 0; width: 100%; overflow-x: auto; scrollbar-width: none; }
         .top-nav::-webkit-scrollbar { display: none; }
-        .nav-item { 
-            color: rgba(255,255,255,0.4); font-size: 13px; font-weight: 600; 
-            white-space: nowrap; text-transform: uppercase; cursor: pointer; transition: 0.3s; 
-        }
-        .nav-item.active { color: #D4AF37; }
+        .nav-item { color: rgba(255, 255, 255, 0.35); font-size: 11px; font-weight: 500; letter-spacing: 2.5px; white-space: nowrap; text-transform: uppercase; cursor: pointer; position: relative; padding-bottom: 6px; }
+        .nav-item.active { color: #fff; }
+        .nav-item.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 12px; height: 1.5px; background: #D4AF37; }
 
-        /* 轮播容器 */
-        .swiper { width: 100%; height: 100vh; }
-        .swiper-slide { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        /* 防伪 LOGO */
+        .brand-logo { position: absolute; top: 115px; right: 35px; z-index: 2500; width: 25px !important; height: auto !important; pointer-events: none; opacity: 0.7; user-select: none; -webkit-user-drag: none; }
+        
+        /* 左下角产品型号区 */
+        .info-group { position: absolute; bottom: 50px; left: 40px; z-index: 1500; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; pointer-events: none; }
+        .product-id { color: #D4AF37; font-size: 20px; font-weight: 800; letter-spacing: 0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }
+        .specs-panel { display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); padding: 12px; border-radius: 4px; border-left: 2px solid #D4AF37; }
+        .spec-item { display: flex; align-items: center; gap: 8px; font-size: 9px; color: rgba(255,255,255,0.7); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .spec-item svg { width: 12px; height: 12px; fill: #D4AF37; }
+        
+        /* INQ. 勾选按钮 */
+        .selection-handler { display: flex; align-items: center; gap: 6px; cursor: pointer; pointer-events: auto; background: rgba(0,0,0,0.4); padding: 5px 12px; border-radius: 4px; border: 0.5px solid rgba(212, 175, 55, 0.4); backdrop-filter: blur(8px); }
+        .checkbox { width: 12px; height: 12px; border: 1px solid #D4AF37; border-radius: 50%; position: relative; }
+        .checkbox.checked { background: #D4AF37; }
+        .checkbox.checked::after { content: '✓'; position: absolute; color: #000; font-size: 8px; font-weight: bold; top: -1px; left: 2px; }
+        .selection-handler span { font-size: 10px; font-weight: 700; color: #D4AF37; letter-spacing: 1px; text-transform: uppercase; }
 
-        /* 智能背景：拉伸平铺并深度虚化 */
-        .bg-stretch-ambient {
-            position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
-            z-index: 1; overflow: hidden;
-        }
-        .bg-stretch-ambient img { 
-            width: 100%; height: 100%; 
-            object-fit: cover; 
-            transform: scale(1.5); 
-            filter: blur(100px) brightness(0.7) saturate(140%); 
-            transition: opacity 0.8s ease;
+        /* 购物车篮子 */
+        .cart-fab { position: relative; background: #D4AF37; color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: none; cursor: pointer; pointer-events: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.8); animation: pulse-gold 2s infinite; }
+        .cart-fab svg { width: 16px; height: 16px; fill: #000; }
+        .cart-badge { position: absolute; top: -4px; right: -4px; background: #fff; color: #D4AF37; font-size: 8px; font-weight: 900; width: 14px; height: 14px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1.5px solid #D4AF37; }
+        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); } 70% { box-shadow: 0 0 0 8px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
+
+        /* 右侧联系方式区 */
+        .contact-panel { position: absolute; bottom: 50px; right: 30px; z-index: 1500; display: flex; flex-direction: row; gap: 15px; }
+        .icon-btn { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); cursor: pointer; }
+        .icon-btn svg { width: 18px; height: 18px; fill: rgba(255,255,255,0.8); }
+
+        /* 图片滑动层 */
+        .swiper { width: 100%; height: 100dvh; }
+        .swiper-slide { position: relative; width: 100%; height: 100%; background: #000; overflow: hidden; }
+        .bg-stretch-ambient { position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; z-index: 1; pointer-events: none; }
+        .bg-stretch-ambient img { width: 100%; height: 100%; object-fit: cover; filter: blur(60px) brightness(0.3); }
+        .image-container { position: absolute; width: 100%; height: 100%; z-index: 100; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+        .responsive-img { position: absolute; transition: opacity 0.8s ease-in-out; filter: drop-shadow(0 20px 60px rgba(0,0,0,0.9)); user-select: none; pointer-events: none;}
+        .img-v { width: 90%; height: 85%; object-fit: contain; opacity: 1; z-index: 101; }
+        .img-h { width: 100%; height: 100%; object-fit: cover; opacity: 0; z-index: 102; }
+
+        @media (orientation: landscape) {
+            .has-h .img-v { opacity: 0; }
+            .has-h .img-h { opacity: 1; }
+            .contact-panel { bottom: 50px; right: 35px; transform: none; flex-direction: column; }
         }
 
-        /* 产品展示：解决 800x800 留白感 */
-        .image-box { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer; }
-        .image-box img { 
-            position: absolute; 
-            max-width: 92%; 
-            max-height: 78%; 
-            object-fit: contain; 
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.5));
-        }
-        .img-pure { z-index: 12; opacity: 1; }
-        .img-effect { z-index: 11; opacity: 0; }
-        .image-box.show-effect .img-pure { opacity: 0; }
-        .image-box.show-effect .img-effect { opacity: 1; }
+        body.immersive .ui-element { opacity: 0; pointer-events: none; }
+        body.immersive .top-nav { transform: translateY(-100%); }
 
-        /* 产品ID标注 */
-        .product-id { 
-            position: absolute; bottom: 145px; left: 30px; 
-            color: rgba(255,255,255,0.3); font-size: 16px; font-weight: 800; 
-            letter-spacing: 3px; z-index: 20;
+        /* 弹窗与表单样式 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        
+        .contact-modal { background: #111; border: 1px solid rgba(212,175,55,0.4); border-radius: 16px; padding: 25px; width: 340px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        
+        /* 👑 强制居中二维码图片 (加入 !important 优先级) */
+        .contact-modal img { width: 180px; height: 180px; margin: 15px auto !important; display: block; border-radius: 8px; background: #fff; padding: 5px; }
+
+        .req-modal { background: #111; border: 1px solid rgba(212,175,55,0.4); border-radius: 12px; padding: 20px; width: 92%; max-width: 500px; text-align: left; box-shadow: 0 20px 50px rgba(0,0,0,0.9); display: flex; flex-direction: column; max-height: 90vh; }
+        .req-header { color: #D4AF37; font-size: 16px; font-weight: 800; letter-spacing: 1px; margin-bottom: 15px; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 10px; text-align: center; text-transform: uppercase;}
+        
+        .req-body { overflow-y: auto; padding-right: 10px; flex: 1; }
+        .req-body::-webkit-scrollbar { width: 4px; }
+        .req-body::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+
+        .form-section { background-color: rgba(212,175,55,0.1); color: #D4AF37; padding: 6px 12px; font-size: 12px; border-left: 3px solid #D4AF37; margin-top: 15px; margin-bottom: 10px; font-weight: bold; }
+        .form-group { margin-bottom: 12px; }
+        .form-group.row { display: flex; gap: 10px; }
+        .form-group.row > div { flex: 1; }
+        .form-group label { display: block; font-size: 11px; color: #ccc; margin-bottom: 5px; font-weight: 600; }
+        .form-group label span { color: #777; font-weight: normal; font-size: 10px; margin-left: 4px; }
+        .form-group label span.req { color: #e74c3c; font-weight: bold; margin-left: 4px;}
+        
+        .form-group input[type="text"], .form-group input[type="number"], .form-group select, .form-group textarea {
+            width: 100%; background: #222; border: 1px solid rgba(212,175,55,0.3); color: #D4AF37; padding: 8px 10px; border-radius: 4px; font-size: 12px; outline: none; transition: 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #D4AF37; background: #000; }
+        .form-group textarea { resize: vertical; min-height: 50px; }
+
+        .radio-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
+        .radio-label { font-size: 11px; color: #bbb; display: flex; align-items: center; cursor: pointer; }
+        .radio-label input { margin-right: 5px; accent-color: #D4AF37; }
+
+        .modal-btn { background: #D4AF37; color: #000; border: none; padding: 12px; border-radius: 30px; width: 100%; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .modal-btn.secondary { background: rgba(255,255,255,0.05); color: #D4AF37; border: 1px solid #D4AF37; }
+        
+        .skip-btn { background: rgba(212,175,55,0.1); border: 1px dashed #D4AF37; color: #D4AF37; width: 100%; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; margin-bottom: 15px; text-transform: uppercase; transition: 0.3s; }
+        .skip-btn:hover { background: rgba(212,175,55,0.2); }
+
+        #sysMsg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 18px; text-align: center; z-index: 5000; line-height: 1.6; }
+
+        /* 👑 原生系统打印样式 */
+        #nativePrintArea { display: none; }
+        
+        @media print {
+            @page { size: A4 portrait; margin: 0; }
+            body > *:not(#nativePrintArea) { display: none !important; }
+            body { background-color: #fff !important; color: #000 !important; margin: 0; padding: 0; }
+            #nativePrintArea { display: block !important; background: #fff; color: #000; font-family: Arial, sans-serif; padding: 15mm 20mm; width: 100%; box-sizing: border-box; }
+            .print-header { text-align: center; border-bottom: 3px solid #D4AF37; padding-bottom: 15px; margin-bottom: 25px; }
+            .print-header h1 { font-size: 28px; margin: 0; font-weight: bold; color: #000; letter-spacing: 1px; }
+            .print-header h3 { font-size: 14px; margin: 5px 0 0 0; color: #D4AF37; font-weight: bold; }
+            .print-title { font-size: 14px; font-weight: bold; background: #000; color: #D4AF37; padding: 8px 15px; margin: 15px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;}
+            .print-table th, .print-table td { border: 1px solid #ddd; padding: 12px; text-align: left; color: #000; }
+            .print-table th { background: #f5f5f5; width: 35%; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-footer { text-align: center; font-size: 11px; color: #888; margin-top: 40px; padding-top: 10px;}
         }
 
-        /* 底部四联图标 */
-        .bottom-panel { 
-            position: absolute; bottom: 0; width: 100%; 
-            padding: 20px 25px 65px; padding-bottom: calc(65px + env(safe-area-inset-bottom)); 
-            z-index: 30; display: flex; justify-content: flex-end; pointer-events: none;
-        }
-        .icon-actions { display: flex; gap: 12px; pointer-events: auto; }
-        .icon-btn { 
-            width: 44px; height: 44px; border-radius: 50%; 
-            background: rgba(255,255,255,0.15); display: flex; justify-content: center; align-items: center; 
-            backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.15);
-            text-decoration: none;
-        }
-        .icon-btn svg { width: 18px; height: 18px; fill: #fff; }
+        /* 👑 翻译组件桌面端样式 */
+        #google_translate_element { position: absolute; top: 30px; right: 40px; z-index: 3000; }
+        .goog-te-gadget-simple { background-color: rgba(0,0,0,0.6) !important; border: 1px solid rgba(212,175,55,0.4) !important; border-radius: 6px; padding: 6px 10px !important; backdrop-filter: blur(8px); display: flex; align-items: center;}
+        .goog-te-gadget-simple span { color: #D4AF37 !important; font-family: 'Helvetica Neue', Arial, sans-serif !important; font-size: 12px !important; font-weight: bold; letter-spacing: 1px; }
+        .goog-te-gadget-simple img { display: none; }
+        .goog-te-menu-value span:nth-child(3) { display:none; }
+        .goog-te-menu-value span:nth-child(5) { color: #D4AF37 !important; font-size: 10px !important; margin-left: 5px; }
+        .skiptranslate iframe { display: none !important; }
+        body { top: 0 !important; }
 
-        /* 要求的版权信息更新 */
-        .company-footer { position: fixed; bottom: 15px; width: 100%; text-align: center; color: rgba(255,255,255,0.2); font-size: 8px; z-index: 5; letter-spacing: 1px; }
+        /* 👑 手机端排版优化 */
+        @media (max-width: 768px) { 
+            .brand-logo { width: 20px !important; top: 105px; right: 25px; }
+            #google_translate_element { top: 12px; right: 20px; left: auto; }
+            .goog-te-gadget-simple { padding: 4px 8px !important; }
+            .goog-te-gadget-simple span { font-size: 10px !important; }
+            .top-nav { align-items: flex-end; padding-bottom: 15px; padding-left: 20px; height: 90px; }
+        }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-    <!-- 导航栏：由脚本自动填入 -->
-    <div class="top-nav" id="topNav"></div>
+    <div id="google_translate_element" class="ui-element"></div>
 
-    <!-- 主容器 -->
-    <div class="swiper mySwiper">
-        <div class="swiper-wrapper" id="mainWrapper"></div>
+    <img src="assets/logo.png" class="brand-logo ui-element" onerror="this.style.display='none'">
+    <div class="top-nav ui-element" id="topNav"></div>
+    <div class="swiper mySwiper"><div class="swiper-wrapper" id="mainWrapper"></div></div>
+
+    <div id="nativePrintArea"></div>
+
+    <div id="sysMsg"></div>
+
+    <div id="modal" class="modal-overlay" onclick="this.classList.remove('show')">
+        <div class="contact-modal" onclick="event.stopPropagation()">
+            <h3 id="mTitle" style="color:#D4AF37; letter-spacing: 2px; text-transform: uppercase;">Contact</h3>
+            <img id="mQr" src="" style="display:none;" onerror="this.style.display='none'">
+            <p id="mDesc" style="font-size:12px; color:#999; margin: 15px 0; line-height: 1.5;"></p>
+            <div id="mBtnGroup"></div>
+        </div>
     </div>
 
-    <!-- 版权声明 -->
-    <div class="company-footer">@copyright Zhejiang Kaihua Door Co. Ltd.</div>
-
-    <!-- 引用数据与库 -->
-    <script src="data.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-    <script>
-        // 联系配置
-        const config = { 
-            phone: "008613857920335", 
-            whatsapp: "8613857920335", 
-            wechat: "13857920335", 
-            email: "khdoor@126.com" 
-        };
-        
-        let swiper = null;
-
-        // 初始化页面结构
-        function initPage() {
-            const navContainer = document.getElementById('topNav');
-            const categories = Object.keys(productData);
+    <div id="reqModal" class="modal-overlay" onclick="closeReqModal()">
+        <div class="req-modal" onclick="event.stopPropagation()">
+            <div class="req-header" id="reqHeaderTitle">Requirement Form</div>
             
-            if (categories.length === 0) {
-                document.getElementById('mainWrapper').innerHTML = '<div class="swiper-slide">No Data Found</div>';
-                return;
-            }
+            <div class="req-body">
+                <button class="skip-btn" onclick="skipWithDrawing()">📁 I have a drawing (Skip specs)</button>
 
-            // 自动生成导航标签 (处理横线为横杆)
-            navContainer.innerHTML = categories.map((cat, index) => `
-                <div class="nav-item ${index === 0 ? 'active' : ''}" onclick="changeCat('${cat}', ${index})">
-                    ${cat.replace(/-/g, ' ')}
+                <div class="form-section" style="margin-top: 5px;">👤 Customer Info</div>
+                <div class="form-group row">
+                    <div><label>Customer Name <span class="req">*</span></label><input type="text" id="reqName" placeholder="Required"></div>
+                    <div><label>Mobile/Whatsapp/Wechat <span class="req">*</span></label><input type="text" id="reqPhone" placeholder="Required"></div>
                 </div>
-            `).join('');
 
-            // 默认加载第一个文件夹的内容
+                <div class="form-section">1. Core Parameters</div>
+                <div class="form-group">
+                    <label>Dimension Type</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="reqSizeType" value="Rough Opening"> Rough Opening</label>
+                        <label class="radio-label"><input type="radio" name="reqSizeType" value="Outer Frame Net"> Outer Frame Net</label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div><label>Width (mm)</label><input type="number" id="reqWidth" placeholder="W"></div>
+                    <div><label>Height (mm)</label><input type="number" id="reqHeight" placeholder="H"></div>
+                </div>
+                <div class="form-group">
+                    <label>Opening Direction</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="reqDir" value="Left-Outswing"> Left-Outswing</label>
+                        <label class="radio-label"><input type="radio" name="reqDir" value="Right-Outswing"> Right-Outswing</label>
+                        <label class="radio-label"><input type="radio" name="reqDir" value="Left-Inswing"> Left-Inswing</label>
+                        <label class="radio-label"><input type="radio" name="reqDir" value="Right-Inswing"> Right-Inswing</label>
+                    </div>
+                </div>
+
+                <div class="form-section">2. Material & Finishes</div>
+                <div class="form-group">
+                    <label>Interior Material</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="reqBackMat" value="Cast Aluminum"> Cast Aluminum</label>
+                        <label class="radio-label"><input type="radio" name="reqBackMat" value="Solid Wood"> Solid Wood</label>
+                    </div>
+                </div>
+
+                <div class="form-section">3. Hardware & Environment</div>
+                <div class="form-group">
+                    <label>Lock Type</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="reqLock" value="Mechanical Lock"> Mechanical Lock</label>
+                        <label class="radio-label"><input type="radio" name="reqLock" value="Smart Lock"> Smart Lock</label>
+                        <label class="radio-label"><input type="radio" name="reqLock" value="Pre-drill only"> Pre-drill only</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Hinge System</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="reqHinge" value="Concealed Hinges"> Concealed Hinges</label>
+                        <label class="radio-label"><input type="radio" name="reqHinge" value="Exposed Hinges"> Exposed Hinges</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Installation Environment</label>
+                    <select id="reqEnv">
+                        <option value="">Select...</option>
+                        <option value="Fully Outdoor">Fully Outdoor</option>
+                        <option value="Semi-Outdoor">Semi-Outdoor (with canopy)</option>
+                        <option value="Indoor Hallway">Indoor Hallway</option>
+                    </select>
+                </div>
+
+                <div class="form-section">Remarks</div>
+                <div class="form-group">
+                    <textarea id="reqRemarks" placeholder="If you have special customized dimensions, frame requirements, or other conditions, please fill them in here..."></textarea>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <button class="modal-btn" onclick="generatePDFAndAdd()" id="pdfBtn">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="#000"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+                    GENERATE PDF & ADD
+                </button>
+                <button class="modal-btn secondary" onclick="closeReqModal()">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const ICONS = {
+            sec: '<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>',
+            wea: '<svg viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.75l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-7.07 11.03l-1.79 1.79 1.41 1.41 1.8-1.79-1.42-1.42zM11 20.5h2v3h-2v-3z"/></svg>',
+            sou: '<svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>',
+            ele: '<svg viewBox="0 0 24 24"><path d="M12.14 2.14L3 11.28V22h18V11.28l-8.86-9.14zM12 13c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>',
+            wa: '<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>',
+            wc: '<svg viewBox="0 0 24 24"><path d="M8.5 14.5c-3.8 0-7-2.6-7-5.8s3.2-5.8 7-5.8 7 2.6 7 5.8-3.2 5.8-7 5.8c-.8 0-1.6-.1-2.3-.4l-2.4 1.2.6-2.2c-1.7-1.1-2.9-2.7-2.9-4.4zm1.5-6.5c-.4 0-.8.3-.8.8s.4.8.8.8.8-.3.8-.8-.4-.8-.8-.8zm-3 0c-.4 0-.8.3-.8.8s.4.8.8.8.8-.3.8-.8-.4-.8-.8-.8zm15.5 8c0 3.2-3.4 5.8-7.5 5.8-.8 0-1.6-.2-2.4-.5l-2.6 1.3.7-2.4c-1.8-1.2-3.1-2.8-3.1-4.7 0-3.2 3.4-5.8 7.5-5.8s7.5 2.6 7.5 5.8zm-4.5-1.5c.4 0 .8-.3.8-.8s-.4-.8-.8-.8-.8.3-.8.8.4.8.8.8zm-3 0c.4 0 .8-.3.8-.8s-.4-.8-.8-.8-.8.3-.8.8.4.8.8.8z"/></svg>',
+            em: '<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>',
+            ph: '<svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>'
+        };
+
+        let swiper = null;
+        let selectedItemsMap = new Map(); 
+        let currentEditingId = null;
+        let globalCustomerInfo = { name: '', phone: '' };
+
+        document.addEventListener('DOMContentLoaded', initPage);
+
+        function initPage() {
+            if (typeof SITE_CONFIG === 'undefined' || typeof productData === 'undefined') return;
+            const categories = Object.keys(productData);
+            document.getElementById('topNav').innerHTML = categories.map((cat, index) => {
+                const name = cat.replace(/-/g, ' ');
+                return `<div class="nav-item ${index === 0 ? 'active' : ''}" onclick="changeCat('${cat}', ${index}); event.stopPropagation();">${name}</div>`;
+            }).join('');
             renderGallery(categories[0]);
         }
 
-        // 渲染具体分类的产品
         function renderGallery(cat) {
             const wrapper = document.getElementById('mainWrapper');
-            const items = productData[cat] || [];
-            
-            wrapper.innerHTML = items.map(item => `
-                <div class="swiper-slide">
-                    <!-- 氛围背景 -->
-                    <div class="bg-stretch-ambient">
-                        <img src="${item.pure}" id="bg-${item.id.replace(/\s+/g, '')}">
-                    </div>
-                    
-                    <div class="product-id">MODEL: ${item.id}</div>
-                    
-                    <!-- 点击切换 Pure 和 Effect -->
-                    <div class="image-box" onclick="toggleEffect(this, '${item.id.replace(/\s+/g, '')}')">
-                        <img src="${item.pure}" class="img-pure" loading="lazy">
-                        <img src="${item.effect}" class="img-effect" loading="lazy">
-                    </div>
+            const showSpecs = SITE_CONFIG.specCategories.some(k => cat.toUpperCase().includes(k));
+            const specsHtml = showSpecs ? `<div class="specs-panel">${SITE_CONFIG.aluminumSpecs.map(s => `<div class="spec-item">${ICONS[s.id]} ${s.text}</div>`).join('')}</div>` : '';
 
-                    <div class="bottom-panel">
-                        <div class="icon-actions">
-                            <a href="tel:${config.phone}" class="icon-btn" title="Call">
-                                <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-                            </a>
-                            <a href="https://wa.me/${config.whatsapp}" target="_blank" class="icon-btn" title="WhatsApp">
-                                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                            </a>
-                            <div onclick="alert('WeChat ID: ' + config.wechat)" class="icon-btn" title="WeChat">
-                                <svg viewBox="0 0 24 24"><path d="M8.5 14.5c-3.8 0-7-2.6-7-5.8s3.2-5.8 7-5.8 7 2.6 7 5.8-3.2 5.8-7 5.8c-.8 0-1.6-.1-2.3-.4l-2.4 1.2.6-2.2c-1.7-1.1-2.9-2.7-2.9-4.4zm1.5-6.5c-.4 0-.8.3-.8.8s.4.8.8.8.8-.3.8-.8-.4-.8-.8-.8zm-3 0c-.4 0-.8.3-.8.8s.4.8.8.8.8-.3.8-.8-.4-.8-.8-.8zm15.5 8c0 3.2-3.4 5.8-7.5 5.8-.8 0-1.6-.2-2.4-.5l-2.6 1.3.7-2.4c-1.8-1.2-3.1-2.8-3.1-4.7 0-3.2 3.4-5.8 7.5-5.8s7.5 2.6 7.5 5.8zm-4.5-1.5c.4 0 .8-.3.8-.8s-.4-.8-.8-.8-.8.3-.8.8.4.8.8.8zm-3 0c.4 0 .8-.3.8-.8s-.4-.8-.8-.8-.8.3-.8.8.4.8.8.8z"/></svg>
+            wrapper.innerHTML = (productData[cat] || []).map(item => `
+                <div class="swiper-slide" onclick="document.body.classList.toggle('immersive')">
+                    <div class="bg-stretch-ambient"><img src="${item.v || item.h}"></div>
+                    <div class="image-container ${item.h ? 'has-h' : ''}">
+                        <img src="${item.v}" class="responsive-img img-v" loading="lazy">
+                        ${item.h ? `<img src="${item.h}" class="responsive-img img-h" loading="lazy">` : ''}
+                    </div>
+                    <div class="info-group ui-element">
+                        <div class="product-id">${item.id}</div>
+                        ${specsHtml}
+                        <div style="display: flex; align-items: center; gap: 15px; margin-top: 4px;">
+                            <div class="selection-handler" onclick="toggleSelect('${item.id}', event, this)">
+                                <div class="checkbox ${selectedItemsMap.has(item.id) ? 'checked' : ''}"></div>
+                                <span>INQ.</span>
                             </div>
-                            <a href="mailto:${config.email}" class="icon-btn" title="Email">
-                                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                            </a>
+                            <button class="cart-fab cart-btn-global" onclick="openInquiryChoice(event)" style="display: ${selectedItemsMap.size > 0 ? 'flex' : 'none'};">
+                                <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                <span class="cart-badge cart-count-global">${selectedItemsMap.size}</span>
+                            </button>
                         </div>
+                    </div>
+                    <div class="contact-panel ui-element">
+                        <div class="icon-btn" onclick="openContact('ph', event)">${ICONS.ph}</div>
+                        <div class="icon-btn" onclick="openContact('whatsapp', event)">${ICONS.wa}</div>
+                        <div class="icon-btn" onclick="openContact('wechat', event)">${ICONS.wc}</div>
+                        <div class="icon-btn" onclick="openContact('email', event)">${ICONS.em}</div>
                     </div>
                 </div>
             `).join('');
             
-            // 重置滑动库，使其水平滑动产品
             if(swiper) swiper.destroy();
-            swiper = new Swiper(".mySwiper", { 
-                direction: "horizontal", 
-                mousewheel: true, 
-                grabCursor: true,
-                speed: 600
+            swiper = new Swiper(".mySwiper", { mousewheel: true });
+        }
+
+        function toggleSelect(id, e, element) {
+            e.stopPropagation();
+            const checkbox = element.querySelector('.checkbox');
+            if (selectedItemsMap.has(id)) {
+                selectedItemsMap.delete(id);
+                checkbox.classList.remove('checked');
+                updateCartFAB();
+            } else {
+                currentEditingId = id;
+                openReqModal();
+            }
+        }
+
+        function openReqModal() {
+            document.getElementById('reqHeaderTitle').innerText = `${currentEditingId} - Requirement Form`;
+            document.getElementById('reqName').value = globalCustomerInfo.name;
+            document.getElementById('reqPhone').value = globalCustomerInfo.phone;
+            document.getElementById('reqWidth').value = '';
+            document.getElementById('reqHeight').value = '';
+            document.getElementById('reqEnv').value = '';
+            document.getElementById('reqRemarks').value = '';
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            document.getElementById('reqModal').classList.add('show');
+        }
+
+        function closeReqModal() { document.getElementById('reqModal').classList.remove('show'); currentEditingId = null; }
+        function getRadioValue(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : 'N/A'; }
+
+        function skipWithDrawing() {
+            const nameVal = document.getElementById('reqName').value.trim();
+            const phoneVal = document.getElementById('reqPhone').value.trim();
+            if (!nameVal || !phoneVal) { alert("Please fill in Name and Contact Info first."); return; }
+            globalCustomerInfo.name = nameVal;
+            globalCustomerInfo.phone = phoneVal;
+            selectedItemsMap.set(currentEditingId, { hasOwnDrawing: true });
+            
+            checkUIState(); updateCartFAB(); closeReqModal(); openInquiryChoice();
+        }
+
+        function generatePDFAndAdd() {
+            const nameVal = document.getElementById('reqName').value.trim();
+            const phoneVal = document.getElementById('reqPhone').value.trim();
+            if (!nameVal || !phoneVal) { alert("Please fill in Name and Contact Info."); return; }
+
+            globalCustomerInfo.name = nameVal;
+            globalCustomerInfo.phone = phoneVal;
+
+            const data = {
+                sizeType: getRadioValue('reqSizeType'),
+                width: document.getElementById('reqWidth').value || 'N/A',
+                height: document.getElementById('reqHeight').value || 'N/A',
+                dir: getRadioValue('reqDir'),
+                backMat: getRadioValue('reqBackMat'),
+                lock: getRadioValue('reqLock'),
+                hinge: getRadioValue('reqHinge'),
+                env: document.getElementById('reqEnv').value || 'N/A',
+                remarks: document.getElementById('reqRemarks').value || 'None'
+            };
+
+            const printHtml = `
+                <div class="print-header">
+                    <h1>KING DOOR</h1>
+                    <h3>Requirement Spec Sheet</h3>
+                </div>
+                <div class="print-title">👤 Customer Info</div>
+                <table class="print-table">
+                    <tr><th>Customer Name</th><td>${globalCustomerInfo.name}</td></tr>
+                    <tr><th>Mobile/Whatsapp/Wechat</th><td>${globalCustomerInfo.phone}</td></tr>
+                </table>
+                <div class="print-title">🚪 Specifications: [ ${currentEditingId} ]</div>
+                <table class="print-table">
+                    <tr><th>Dimension Type</th><td>${data.sizeType}</td></tr>
+                    <tr><th>Size (W x H)</th><td style="font-weight: bold;">${data.width} x ${data.height} mm</td></tr>
+                    <tr><th>Opening Direction</th><td>${data.dir}</td></tr>
+                    <tr><th>Interior Material</th><td>${data.backMat}</td></tr>
+                    <tr><th>Locking System</th><td>${data.lock}</td></tr>
+                    <tr><th>Hinge System</th><td>${data.hinge}</td></tr>
+                    <tr><th>Install Environment</th><td>${data.env}</td></tr>
+                    <tr><th>Specific Remarks</th><td>${data.remarks}</td></tr>
+                </table>
+                <div class="print-footer">
+                    Date: ${new Date().toLocaleDateString()} | &copy; Copy right by Zhejiang Kaihua Industry Co. Ltd.
+                </div>
+            `;
+
+            document.getElementById('nativePrintArea').innerHTML = printHtml;
+            
+            selectedItemsMap.set(currentEditingId, data);
+            checkUIState(); 
+            updateCartFAB(); 
+            closeReqModal();
+            
+            setTimeout(() => { window.print(); }, 100);
+        }
+
+        function checkUIState() {
+            document.querySelectorAll('.info-group').forEach(group => {
+                const id = group.querySelector('.product-id').innerText;
+                if(selectedItemsMap.has(id)) { group.querySelector('.checkbox').classList.add('checked'); }
+                else { group.querySelector('.checkbox').classList.remove('checked'); }
             });
         }
 
-        // 切换纯图和实景的效果
-        function toggleEffect(el, bgId) {
-            el.classList.toggle('show-effect');
-            const bgImg = document.getElementById('bg-' + bgId);
-            const isEffect = el.classList.contains('show-effect');
-            // 同步背景色彩晕染源
-            bgImg.src = isEffect ? el.querySelector('.img-effect').src : el.querySelector('.img-pure').src;
+        function updateCartFAB() {
+            const total = selectedItemsMap.size;
+            document.querySelectorAll('.cart-btn-global').forEach(fab => { fab.style.display = total > 0 ? 'flex' : 'none'; });
+            document.querySelectorAll('.cart-count-global').forEach(badge => { badge.innerText = total; });
         }
 
-        // 分类切换逻辑
-        function changeCat(cat, index) {
-            document.querySelectorAll('.nav-item').forEach((el, i) => {
-                el.classList.toggle('active', i === index);
-            });
-            renderGallery(cat);
+        function openInquiryChoice(e) {
+            if(e) e.stopPropagation();
+            const m = document.getElementById('modal');
+            document.getElementById('mTitle').innerText = 'Select Channel';
+            document.getElementById('mQr').style.display = 'none'; 
+            document.getElementById('mDesc').innerHTML = `Configured <b style="color:#D4AF37">${selectedItemsMap.size}</b> items.<br><br>💡 Note: A PDF has been prepared. You can attach it when sending.`;
+            document.getElementById('mBtnGroup').innerHTML = `
+                <button class="modal-btn" onclick="sendBatchInquiry('whatsapp')" style="background: #25D366; color: #fff;">Via WhatsApp</button>
+                <button class="modal-btn secondary" onclick="sendBatchInquiry('email')">Via Email</button>
+            `;
+            m.classList.add('show');
         }
 
-        // 启动
-        window.onload = initPage;
+        function sendBatchInquiry(method) {
+            const c = SITE_CONFIG.contacts;
+            document.getElementById('modal').classList.remove('show');
+
+            if(method === 'whatsapp') {
+                let waText = `Hi KING DOOR, I need a quote for these items.\n\n👤 *Customer Info*\n- Name: ${globalCustomerInfo.name}\n- Mobile/Whatsapp/Wechat: ${globalCustomerInfo.phone}\n\n📋 *Order Details*`;
+                selectedItemsMap.forEach((d, id) => {
+                    if(d.hasOwnDrawing) { 
+                        waText += `\n\n🚪 *Model: ${id}*\n- Note: I will provide my own CAD/Drawing.`; 
+                    } else { 
+                        waText += `\n\n🚪 *Model: ${id}*\n- Size: ${d.width}x${d.height} mm\n- Dir: ${d.dir}\n- Lock: ${d.lock}\n- Hinge: ${d.hinge}\n- Mat: ${d.backMat}`; 
+                    }
+                });
+                window.open(`https://wa.me/${c.whatsapp}?text=${encodeURIComponent(waText)}`);
+            } else {
+                let emText = "Hi KING DOOR,\n\nI have completed the requirement form for a quote.\n\n";
+                emText += "========== CUSTOMER INFO ==========\n";
+                emText += "Name: " + globalCustomerInfo.name + "   |   Mobile/Whatsapp/Wechat: " + globalCustomerInfo.phone + "\n\n";
+                emText += "========== ORDER DETAILS ==========\n";
+
+                selectedItemsMap.forEach((d, id) => {
+                    emText += "[ MODEL: " + id + " ]\n";
+                    if(d.hasOwnDrawing) { 
+                        emText += "- Note: I will provide my own CAD/Drawing.\n"; 
+                    } else {
+                        emText += "- Dimension Type: " + d.sizeType + "\n";
+                        emText += "- Size (W x H): " + d.width + " x " + d.height + " mm\n";
+                        emText += "- Direction: " + d.dir + "\n";
+                        emText += "- Interior: " + d.backMat + "\n";
+                        emText += "- Lock System: " + d.lock + "\n";
+                        emText += "- Hinge System: " + d.hinge + "\n";
+                        emText += "- Environment: " + d.env + "\n";
+                        emText += "- Remarks: " + d.remarks + "\n";
+                    }
+                    emText += "-----------------------------------\n\n";
+                });
+                
+                emText = emText.replace(/\n/g, "\t\r\n");
+                window.location.href = `mailto:${c.email}?subject=${encodeURIComponent("Quote Request - " + globalCustomerInfo.name)}&body=${encodeURIComponent(emText)}`;
+            }
+        }
+
+        function openContact(type, e) {
+            e.stopPropagation();
+            const m = document.getElementById('modal'), c = SITE_CONFIG.contacts;
+            document.getElementById('mQr').style.display = 'block';
+            if(type==='whatsapp') {
+                if(selectedItemsMap.size > 0) { openInquiryChoice(e); return; }
+                document.getElementById('mTitle').innerText = 'WhatsApp';
+                document.getElementById('mQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wa.me/${c.whatsapp}`;
+                document.getElementById('mDesc').innerText = `+${c.whatsapp}\nScan to Chat`;
+                document.getElementById('mBtnGroup').innerHTML = `<button class="modal-btn" onclick="window.open('https://wa.me/${c.whatsapp}')" style="background: #25D366; color: #fff;">OPEN WHATSAPP</button>`;
+            } else if(type==='wechat') {
+                document.getElementById('mTitle').innerText = 'WeChat';
+                document.getElementById('mQr').src = c.wechatQr;
+                document.getElementById('mDesc').innerText = `ID: ${c.wechat}\nScan or Copy ID`;
+                document.getElementById('mBtnGroup').innerHTML = `<button class="modal-btn" onclick="copyTxt('${c.wechat}')">COPY WECHAT ID</button>`;
+            } else if(type==='email') {
+                if(selectedItemsMap.size > 0) { openInquiryChoice(e); return; }
+                document.getElementById('mTitle').innerText = 'Email Us';
+                document.getElementById('mQr').style.display = 'none';
+                document.getElementById('mDesc').innerText = `${c.email}`;
+                document.getElementById('mBtnGroup').innerHTML = `<button class="modal-btn" onclick="window.location.href='mailto:${c.email}'">SEND EMAIL</button>`;
+            } else if(type==='ph') {
+                document.getElementById('mTitle').innerText = 'Call Us';
+                document.getElementById('mQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=tel:${c.phone}`;
+                document.getElementById('mDesc').innerText = `${c.phone}`;
+                document.getElementById('mBtnGroup').innerHTML = `<button class="modal-btn" onclick="window.location.href='tel:${c.phone}'">DIAL NOW</button>`;
+            }
+            m.classList.add('show');
+        }
+
+        function copyTxt(v) {
+            const t = document.createElement('input'); t.value = v; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t);
+            alert('Copied!'); document.getElementById('modal').classList.remove('show');
+        }
+
+        function changeCat(cat, i) { document.querySelectorAll('.nav-item').forEach((el, idx) => el.classList.toggle('active', idx === i)); renderGallery(cat); }
+        window.addEventListener('resize', () => { if(swiper) swiper.update(); });
     </script>
+
+    <script type="text/javascript">
+        function autoTranslate() {
+            try {
+                var userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
+                var supportedLangs = ['es','ar','fr','ru','pt','de','it','vi','th'];
+                if (document.cookie.indexOf('googtrans') === -1 && supportedLangs.indexOf(userLang) > -1) {
+                    document.cookie = "googtrans=/en/" + userLang + "; path=/";
+                    document.cookie = "googtrans=/en/" + userLang + "; domain=" + window.location.hostname + "; path=/";
+                }
+            } catch (e) {}
+        }
+        autoTranslate();
+
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'es,ar,fr,ru,pt,de,it,vi,th', 
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
+
 </body>
 </html>
