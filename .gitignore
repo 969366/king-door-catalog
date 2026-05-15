@@ -1,0 +1,12 @@
+* 
+!index.html 
+!config.js 
+!data.js 
+!package.json 
+!package-lock.json 
+!process_pairs.js 
+!*.bat 
+!.gitignore 
+!public/ 
+!assets/ 
+!README.md 
