@@ -3,7 +3,7 @@ const SITE_CONFIG = {
         whatsapp: "8613857920335",
         wechat: "kaihua_door_official",
         wechatQr: "assets/wechat.jpg",
-        email: "sales@kaihuadoor.com",
+        email: "khdoor@126.com",
         phone: "+86 138 5792 0335"
     },
     specCategories: ["ALUMINUM-DOOR"],
