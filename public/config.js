@@ -1,7 +1,7 @@
 const SITE_CONFIG = {
     contacts: {
         whatsapp: "8613857920335",
-        wechat: "kaihua_door_official",
+        wechat: "Add+13857920335",
         wechatQr: "assets/wechat.jpg",
         email: "khdoor@126.com",
         phone: "+86 138 5792 0335"
