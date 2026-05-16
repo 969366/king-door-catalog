@@ -8,11 +8,8 @@ echo ===================================================
 echo.
 
 echo [1/5] 🧹 正在彻底清理本地旧图与 Git 顽固缓存...
-:: 保险1：暴力清空旧图片，确保不会有大小写混用残留
 rmdir /s /q public\images >nul 2>nul
-:: 保险2：强行拔除可能再次出现的套娃内鬼 (.git 冲突)
 git rm --cached public >nul 2>nul
-:: 保险3：重写最干净的防干扰规则
 del .gitignore >nul 2>nul
 echo .DS_Store > .gitignore
 echo original_images/ >> .gitignore
@@ -29,7 +26,6 @@ if %errorlevel% neq 0 (
 
 echo.
 echo [3/5] 📦 正在动用最高权限强制打包所有资源...
-:: 保险4：无视任何拦截，强制把生成的图片和 Logo 塞进包裹
 git add -A
 git add -f public/images/
 git add -f public/assets/
@@ -41,18 +37,18 @@ echo.
 echo [4/5] 🚀 正在连接云端并极速推送...
 echo ---------------------------------------------------
 git push
-    
-:: 保险5：如果轨道丢失，自动接通 main 或 master 轨道
-if %errorlevel% neq 0 (
-    echo.
-    echo ⚠️ 轨道似乎断开，正在强制重连主轨道 (main)...
-    git push --set-upstream origin main
-        
-    if %errorlevel% neq 0 (
-        echo ⚠️ 正在尝试备用轨道 (master)...
-        git push --set-upstream origin master
-    )
-)
+if %errorlevel% equ 0 goto push_success
+
+echo.
+echo ⚠️ 轨道似乎断开，正在强制重连 main 主分支...
+git push --set-upstream origin main
+if %errorlevel% equ 0 goto push_success
+
+echo.
+echo ⚠️ 正在尝试备用 master 分支...
+git push --set-upstream origin master
+
+:push_success
 echo ---------------------------------------------------
 
 echo.
