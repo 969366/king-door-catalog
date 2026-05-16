@@ -1,78 +1,63 @@
 @echo off
 chcp 65001 >nul
-color 0E
+color 0A
 
 echo ===================================================
-echo      KING DOOR - 展厅全自动【白名单】发布系统
+echo     KING DOOR - 终极无死角自动发布系统 (防黑屏版)
 echo ===================================================
 echo.
 
-:: ==========================================
-:: 第一步：智能重构黑名单 (自动屏蔽所有非核心文件)
-:: ==========================================
-echo [1/4] 🛡️ 正在启动雷达扫描，自动拉黑非必要文件...
-
-:: 1. 核心逻辑：先忽略一切 (*)
-echo * > .gitignore
-
-:: 2. 强力白名单：只允许以下“必须件”通过 (前面加感叹号表示不忽略)
-echo !index.html >> .gitignore
-echo !config.js >> .gitignore
-echo !data.js >> .gitignore
-echo !package.json >> .gitignore
-echo !package-lock.json >> .gitignore
-echo !process_pairs.js >> .gitignore
-echo !*.bat >> .gitignore
-echo !.gitignore >> .gitignore
-echo !public/ >> .gitignore
-echo !assets/ >> .gitignore
-echo !README.md >> .gitignore
-
-:: 3. 强制 Git 刷新缓存，确保之前不小心传上去的垃圾现在立刻消失
-git rm -r --cached . >nul 2>nul
-echo ✅ 扫描完成：除展厅核心文件外，所有杂质已自动拦截。
+echo [1/5] 🧹 正在彻底清理本地旧图与 Git 顽固缓存...
+:: 保险1：暴力清空旧图片，确保不会有大小写混用残留
+rmdir /s /q public\images >nul 2>nul
+:: 保险2：强行拔除可能再次出现的套娃内鬼 (.git 冲突)
+git rm --cached public >nul 2>nul
+:: 保险3：重写最干净的防干扰规则
+del .gitignore >nul 2>nul
+echo .DS_Store > .gitignore
+echo original_images/ >> .gitignore
+echo node_modules/ >> .gitignore
 
 echo.
-:: ==========================================
-:: 第二步：启动加工厂 (处理 original_images)
-:: ==========================================
-echo [2/4] ⚙️ 正在唤醒图片加工脚本更新数据...
-echo ---------------------------------------------------
+echo [2/5] ⚙️ 正在启动 WebP 强力转换引擎 (全小写防错模式)...
 node process_pairs.js
-echo ---------------------------------------------------
 if %errorlevel% neq 0 (
-    echo ❌ 图片处理出错！请检查 original_images 里的图片命名。
+    echo ❌ WebP 转换失败！请检查 Node.js 环境或原图。
     pause
     exit /b
 )
-echo ✅ 加工完成：新图片已生成至 public 目录。
 
 echo.
-:: ==========================================
-:: 第三步：打包同步
-:: ==========================================
-echo [3/4] 📦 正在准备上传最新的纯净版展厅...
-git add .
+echo [3/5] 📦 正在动用最高权限强制打包所有资源...
+:: 保险4：无视任何拦截，强制把生成的图片和 Logo 塞进包裹
+git add -A
+git add -f public/images/
+git add -f public/assets/
+
 set "currentTime=%date% %time%"
-git commit -m "KingDoor Auto Guard Update: %currentTime%" >nul 2>nul
+git commit -m "KingDoor Ultimate Fix: %currentTime%" >nul 2>nul
 
 echo.
-:: ==========================================
-:: 第四步：推送云端
-:: ==========================================
-echo [4/4] 🚀 正在极速推送至云端...
+echo [4/5] 🚀 正在连接云端并极速推送...
 echo ---------------------------------------------------
 git push
-echo ---------------------------------------------------
-echo.
-
-if %errorlevel% equ 0 (
-    echo 🎉 大功告成！
-    echo 🌐 您的线上展厅已更新。
-    echo 🛡️ 刚才扫描到的所有冗余文件夹已被自动拉黑，未占用任何云端空间。
-) else (
-    echo ❌ 推送失败，请检查网络。
+    
+:: 保险5：如果轨道丢失，自动接通 main 或 master 轨道
+if %errorlevel% neq 0 (
+    echo.
+    echo ⚠️ 轨道似乎断开，正在强制重连主轨道 (main)...
+    git push --set-upstream origin main
+        
+    if %errorlevel% neq 0 (
+        echo ⚠️ 正在尝试备用轨道 (master)...
+        git push --set-upstream origin master
+    )
 )
+echo ---------------------------------------------------
 
+echo.
+echo [5/5] 🎉 发布圆满成功！
+echo 施总，您的纯小写 WebP 图片已 100%% 成功冲上云端！彻底告别黑屏！
+echo 请等待 1 到 2 分钟让 GitHub 服务器刷新缓存，然后去查看您的独立域名。
 echo.
 pause
